@@ -37,6 +37,29 @@ We are currently working on organizing the code for the LOVON project, and it wi
 
 Welcome to LOVON, a framework for training and deploying models that bridge natural language instructions with robotic motion and object perception. This guide walks you through dataset generation, model inference with pretrained examples, and training the core components: the Language-to-Motion Model (L2MM) and the Instruction Object Extractor (IOE). Finally, you will be able to deploy the trained policy on robots like Unitree Go2/H1-2/B2.
 
+## 0. Prepare the Environment
+
+
+```bash
+
+# 1. Create a virtual environment
+conda create -n lovon_env python=3.8 -y
+# Activate the environment
+conda activate vlm_env
+
+# 2. Install PyTorch (Choose based on your GPU configuration)
+# For CPU-only
+pip install torch>=1.10.0
+# For GPU, install manually according to your CUDA version (e.g., CUDA 11.7)
+pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+
+# 3. Install other dependencies
+pip install -r requirements.txt
+
+```
+> Note: Check out here to find the PyTorch version suitable for your device - [PyTorch Install Guide](https://pytorch.org/get-started/locally/)
+
+
 ## 1. Dataset Generation 
 
 Navigate to the project's `scripts` directory and run the data generation script. Use the `--num_samples` flag to specify the number of samples you want to generate.
@@ -49,23 +72,23 @@ python dataset_generation.py --num_samples 1000000
 ```
 ### Output Details
 The generated data is saved in the **current directory** (i.e., ~/LOVON/scripts/) with the parent folder name:
-* generated_vlm_dataset_n{num_samples}_cxn025
+* `generated_vlm_dataset_n{num_samples}_cxn025`
 
 (where {num_samples} is replaced by the value you set, e.g., 1000000).
 
 
 **Quick-View Samples**: Small sample files are provided to inspect the data format without opening the full dataset. They are saved alongside the main dataset and named:
 
-* vision_language_motion_pair_format_n{num_samples}_examples.csv
-* vision_language_motion_pair_format_n{num_samples}.json
+* `vision_language_motion_pair_format_n{num_samples}_examples.csv`
+* `vision_language_motion_pair_format_n{num_samples}.json`
 
 
 
 **Full Dataset Structure**:
 * Unsplitted data:
-scripts/generated_vlm_dataset_n{num_samples}_cxn025/vision_language_motion_pair_format_n{num_samples}/
+`scripts/generated_vlm_dataset_n{num_samples}_cxn025/vision_language_motion_pair_format_n{num_samples}/`
 * Train-test split (8:2 ratio):
-scripts/generated_vlm_dataset_n{num_samples}_cxn025/vision_language_motion_pair_format_n{num_samples}/
+`scripts/generated_vlm_dataset_n{num_samples}_cxn025/vision_language_motion_pair_format_n{num_samples}/`
 
 ## 2. Try Out the Pretained Models Examples
 
