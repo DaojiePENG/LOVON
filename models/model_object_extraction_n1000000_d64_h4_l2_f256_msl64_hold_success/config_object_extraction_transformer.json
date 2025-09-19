@@ -1,0 +1,1 @@
+{"n_dataset": 1000000, "d_model": 64, "nhead": 4, "num_encoder_layers": 2, "dim_feedforward": 256, "dropout": 0.1, "learning_rate": 0.0001, "batch_size": 512, "max_seq_length": 64, "epochs": 50, "seed": 42, "output_dir": "model_object_extraction_n1000000_d64_h4_l2_f256_msl64_hold_success", "tokenizer_dir": "tokenizer_language2motion_n1000000"}

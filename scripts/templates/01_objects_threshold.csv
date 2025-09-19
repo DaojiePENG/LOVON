@@ -1,0 +1,81 @@
+mission_objects_list,wn_threshold,hn_threshold
+person,0.32,0.95
+bicycle,0.65,0.75
+car,0.55,0.3
+motorcycle,0.6,0.6
+airplane,0.4,0.3
+bus,0.65,0.45
+train,0.7,0.5
+truck,0.65,0.4
+boat,0.5,0.4
+traffic light,0.25,0.4
+fire hydrant,0.2,0.35
+stop sign,0.25,0.3
+parking meter,0.2,0.3
+bench,0.35,0.4
+bird,0.15,0.2
+cat,0.2,0.25
+dog,0.25,0.3
+horse,0.35,0.45
+sheep,0.3,0.35
+cow,0.4,0.5
+elephant,0.5,0.6
+bear,0.45,0.55
+zebra,0.4,0.5
+giraffe,0.5,0.7
+backpack,0.25,0.35
+umbrella,0.3,0.5
+handbag,0.2,0.25
+tie,0.15,0.2
+suitcase,0.3,0.4
+frisbee,0.15,0.15
+skis,0.4,0.6
+snowboard,0.35,0.5
+sports ball,0.2,0.2
+kite,0.3,0.4
+baseball bat,0.25,0.4
+baseball glove,0.2,0.3
+skateboard,0.3,0.4
+surfboard,0.4,0.6
+tennis racket,0.3,0.5
+bottle,0.2,0.3
+wine glass,0.15,0.25
+cup,0.15,0.25
+fork,0.1,0.2
+knife,0.1,0.25
+spoon,0.1,0.2
+bowl,0.15,0.2
+banana,0.15,0.2
+apple,0.15,0.15
+sandwich,0.2,0.2
+orange,0.15,0.15
+broccoli,0.15,0.25
+carrot,0.1,0.3
+hot dog,0.15,0.25
+pizza,0.25,0.25
+donut,0.15,0.15
+cake,0.2,0.2
+chair,0.4,0.8
+couch,0.5,0.6
+potted plant,0.4,0.7
+bed,0.5,0.6
+dining table,0.55,0.65
+toilet,0.4,0.5
+tv,0.4,0.35
+laptop,0.3,0.25
+mouse,0.1,0.15
+remote,0.15,0.2
+keyboard,0.25,0.15
+cell phone,0.15,0.2
+microwave,0.3,0.3
+oven,0.35,0.4
+toaster,0.25,0.25
+sink,0.35,0.4
+refrigerator,0.45,0.5
+book,0.2,0.3
+clock,0.2,0.2
+vase,0.2,0.3
+scissors,0.1,0.25
+teddy bear,0.2,0.3
+hair drier,0.15,0.25
+toothbrush,0.1,0.2
