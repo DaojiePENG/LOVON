@@ -122,8 +122,8 @@ class MotionPredictor:
             motion_vector = motion.cpu().numpy()[0].tolist()
             mission_state_class = torch.argmax(mission_state, dim=1).item()
             search_state_class = torch.argmax(search_state, dim=1).item()
-            mission_state_map = {0: "success", 1: "searching", 2: "researching", 3: "running"}
-            search_state_map = {0: "had_searching", 1: "had_researching"}
+            mission_state_map = {0: "success", 1: "searching_1", 2: "searching_0", 3: "running"}
+            search_state_map = {0: "had_searching_1", 1: "had_searching_0"}
             
             return {
                 "motion_vector": [round(v, 2) for v in motion_vector],
