@@ -326,7 +326,7 @@ We provide a GUI version of LOVON for easy instruction input. After a short whil
 
 There are some instructions ready to be executed by clicking the `Submit Mission x` button. You can also modify them with different target objects and speeds. Have fun with your robot but remember to be careful!
 
-You can also modify the key args using `--xxx xxx`. For example, if you want to change the robot type to be **B2** with its **inner** camera and a Laplacian Variance threshold of **100**, you can launch with the following command:
+The blur gate starts from a Laplacian-variance threshold of 150 and adapts it every 2 seconds from the 20th percentile of the raw variances. Exponential smoothing (alpha 0.2) and clipping to 0.5–1.5 times the initial value limit abrupt changes and drift. You can also modify the key args using `--xxx xxx`. For example, if you want to change the robot type to be **B2** with its **inner** camera and an initial Laplacian-variance threshold of **100**, you can launch with the following command:
 
 ```bash
 cd LOVON
@@ -336,3 +336,16 @@ For reference on additional key argument options, please inspect the source code
 ## Support
 
 If you run into any issues, please open a new GitHub issue. If you do not receive a response within 3 business days, please email Daojie PENG (dpeng108@connect.hkust-gz.edu.cn) to bring the issue to his attention.
+
+## Citation
+
+For more details, please refer to the [LOVON paper on arXiv](https://arxiv.org/abs/2507.06747). If you find this work useful, please cite:
+
+```bibtex
+@article{peng2025lovon,
+  title={Lovon: Legged open-vocabulary object navigator},
+  author={Peng, Daojie and Cao, Jiahang and Zhang, Qiang and Ma, Jun},
+  journal={arXiv preprint arXiv:2507.06747},
+  year={2025}
+}
+```

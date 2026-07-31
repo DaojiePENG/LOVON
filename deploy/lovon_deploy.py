@@ -29,6 +29,11 @@ from tkinter import Tk, Entry, Button, Label, Frame
 from PIL import Image, ImageTk
 import cv2
 
+try:
+    from .adaptive_blur_threshold import AdaptiveBlurThreshold
+except ImportError:
+    from adaptive_blur_threshold import AdaptiveBlurThreshold
+
 import logging
 logging.getLogger('ultralytics').setLevel(logging.ERROR)
 import warnings
@@ -63,10 +68,27 @@ class ImageGetterThread(threading.Thread):
                                 self.image_queue.get_nowait()
                             except queue.Empty:
                                 pass
-                        # Calculate Laplacian variance to detect blur
+                        # Use the current threshold for this frame. The raw
+                        # variance then updates the threshold for future frames.
+                        current_threshold = self.controller.blur_gate.threshold
                         laplacian_var, is_blur = self.detect_blur(
-                            current_image, threshold=self.controller.blur_threshold
+                            current_image, threshold=current_threshold
                         )
+                        threshold_update = self.controller.blur_gate.observe(
+                            laplacian_var
+                        )
+                        self.controller.blur_threshold = (
+                            self.controller.blur_gate.threshold
+                        )
+                        if threshold_update is not None:
+                            print(
+                                "[BlurGate] Threshold updated "
+                                f"{threshold_update.previous_threshold:.2f} -> "
+                                f"{threshold_update.threshold:.2f} "
+                                f"(q={self.controller.blur_gate.quantile:.2f}: "
+                                f"{threshold_update.lower_quantile:.2f}, "
+                                f"frames={threshold_update.sample_count})"
+                            )
                         if not is_blur:
                             # Only put clear images into the queue
                             self.image_queue.put(current_image)
@@ -92,7 +114,7 @@ class ImageGetterThread(threading.Thread):
                 time.sleep(0.1)
 
     @staticmethod
-    def detect_blur(image, threshold=100.0):
+    def detect_blur(image, threshold=150.0):
         # Convert image to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         
@@ -103,7 +125,10 @@ class ImageGetterThread(threading.Thread):
         is_blur = laplacian_var < threshold
         
         # Print detection result
-        print(f"Laplacian Variance: {laplacian_var:.2f}")
+        print(
+            f"Laplacian Variance: {laplacian_var:.2f}, "
+            f"Threshold: {threshold:.2f}"
+        )
         print("Image is blurry, discarding" if is_blur else "Image is clear")
         return laplacian_var, is_blur
     
@@ -204,7 +229,10 @@ class VisualLanguageController:
                  show_video=True, 
                  show_max_result=False,
                  show_arrowed=False,
-                 blur_threshold=10.0,
+                 blur_threshold=150.0,
+                 blur_update_interval=2.0,
+                 blur_quantile=0.2,
+                 blur_alpha=0.2,
                  lengthen_filter=3):
         # Initialize core functional components
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -224,7 +252,13 @@ class VisualLanguageController:
         self.show_arrowed = show_arrowed  # Whether to display arrow vectors
         self.camera_type = camera_type
         self.robot_type = robot_type
-        self.blur_threshold = blur_threshold  # Threshold for blur detection
+        self.blur_gate = AdaptiveBlurThreshold(
+            initial_threshold=blur_threshold,
+            update_interval=blur_update_interval,
+            quantile=blur_quantile,
+            alpha=blur_alpha,
+        )
+        self.blur_threshold = self.blur_gate.threshold
         self.lengthen_filter = lengthen_filter  # Number of historical detection results to keep
 
         self.button_update_inst = False
@@ -707,8 +741,14 @@ if __name__ == "__main__":
                       help='Show direction arrows')
     
     # Algorithm parameters
-    parser.add_argument('--threshold', type=float, default=10.0,
-                      help='Blur detection threshold')
+    parser.add_argument('--threshold', type=float, default=150.0,
+                      help='Initial Laplacian-variance threshold for adaptive blur rejection')
+    parser.add_argument('--blur_update_interval', type=float, default=2.0,
+                      help='Adaptive blur-threshold update interval in seconds')
+    parser.add_argument('--blur_quantile', type=float, default=0.2,
+                      help='Variance quantile used to adapt the blur threshold')
+    parser.add_argument('--blur_alpha', type=float, default=0.2,
+                      help='Smoothing factor for adaptive blur-threshold updates')
     parser.add_argument('--lengthen_filter', type=int, default=1,
                       help='Number of historical detection results to keep')
     
@@ -726,6 +766,9 @@ if __name__ == "__main__":
         show_max_result=args.show_max_result,
         show_arrowed=args.show_arrowed,
         blur_threshold=args.threshold,
+        blur_update_interval=args.blur_update_interval,
+        blur_quantile=args.blur_quantile,
+        blur_alpha=args.blur_alpha,
         lengthen_filter=args.lengthen_filter
     )
     controller.run()
